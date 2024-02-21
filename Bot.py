@@ -138,7 +138,7 @@ async def punishment(interaction : discord.Interaction, names : str, ids : str, 
     while True:
         uid = MakeUID()
         search = SearchForUid(connection, uid)
-        if search != False:
+        if search == False:
             break
 
     worked = AddPunishment(connection, names, ids, reason, tribename, punishment, warning_type, warnings, uid)

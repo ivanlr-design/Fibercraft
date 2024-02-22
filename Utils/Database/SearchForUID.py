@@ -4,9 +4,9 @@ import pymysql.cursors
 def SearchForUid(connect : pymysql.connect, UID):
     cursor = connect.cursor()
 
-    consulta = f"SELECT * FROM Punishments WHERE UID = '{UID}' "
-
-    cursor.execute(consulta)
+    consulta = "SELECT * FROM Punishments WHERE UID = %s "
+    
+    cursor.execute(consulta, (UID,))
     resultados = cursor.fetchall()
 
     if resultados:

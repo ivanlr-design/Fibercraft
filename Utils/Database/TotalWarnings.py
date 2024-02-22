@@ -4,9 +4,9 @@ import pymysql.cursors
 def TotalWarnings(connector : pymysql.connect, tribename : str):
     cursor = connector.cursor()
 
-    consulta = f"SELECT * FROM Punishments WHERE TribeName = '{tribename}'"
+    consulta = "SELECT * FROM Punishments WHERE TribeName = %s"
 
-    cursor.execute(consulta)
+    cursor.execute(consulta, (tribename, ))
     results = cursor.fetchall()
     if results:
         seasonals = 0

@@ -4,9 +4,9 @@ import pymysql.cursors
 def searchforTribename(connector : pymysql.connect, tribename):
     cursor = connector.cursor()
 
-    consulta = f"SELECT * FROM Punishments WHERE TribeName = '{tribename}'"
-
-    cursor.execute(consulta)
+    consulta = "SELECT * FROM Punishments WHERE TribeName = %s"
+    VALUES = (tribename, )
+    cursor.execute(consulta, VALUES)
     resultados = cursor.fetchall()
 
     if resultados:

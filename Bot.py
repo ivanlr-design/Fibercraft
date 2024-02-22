@@ -8,6 +8,7 @@ from Utils.Database.AddAuthUser import AddAuthUser
 from Utils.Database.TotalWarnings import TotalWarnings
 from Utils.Database.WipeSeasonalWarnings import WipeSeasonalWarnigs
 from Utils.Database.AddTempBan import AddTempBan
+from Utils.Database.RemoveAuthUser import RemoveAuthUser
 from Utils.Database.DeleteTempBan import RemoveTempBan
 from Utils.Database.CheckTempBan import CheckBans
 from Utils.Logs.Log import Log
@@ -57,6 +58,35 @@ async def on_ready():
     await start()
 
 @bot.command()
+async def RemoveAuthorizedUser(ctx, username):
+    if str(ctx.author) != "ivanlr._1_45557":
+        embed = discord.Embed(title="Error",description="You are not allowed to use this command!",color=discord.Color.red())
+        await ctx.send(embed=embed)
+        return
+
+    user = discord.utils.get(ctx.guild.members, name=str(username))
+    connection = db_connection()
+    if user:
+        rst = RemoveAuthUser(connection, username)
+        if rst == False:
+            embed = discord.Embed(title="USERNAME",description=f"Username : {username} is NOT authorized!",color=discord.Color.orange())
+            connection.close()
+            await ctx.send(embed=embed)
+            return
+        else:
+            embed = discord.Embed(title="SUCCESFULLY REMOVED",description=f"Succesfully removed : {username}({rst[0]['DiscordID']}) from authorized user!",color=discord.Color.green())
+            connection.close()
+            await ctx.send(embed=embed)
+            return
+    else:
+        embed = discord.Embed(title="Add Authorized User function",color=discord.Color.red())
+        embed.add_field(name="USER",value=username)
+        embed.add_field(name="Error",value=f"User {username} does not exist in discord server")
+        await ctx.send(embed=embed)
+        connection.close()
+        return
+
+@bot.command()
 async def AddAuthorizedUser(ctx, username):
     if str(ctx.author) != "ivanlr._1_45557":
         embed = discord.Embed(title="Error",description="You are not allowed to use this command!",color=discord.Color.red())
@@ -86,6 +116,7 @@ async def AddAuthorizedUser(ctx, username):
         embed.add_field(name="USER",value=username)
         embed.add_field(name="Error",value=f"User {username} does not exist in discord server")
         await ctx.send(embed=embed)
+        connection.close()
         return
 
 @bot.tree.command(name="removetempban",description="remove temp ban")

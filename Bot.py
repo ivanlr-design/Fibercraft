@@ -11,6 +11,7 @@ from Utils.Database.AddTempBan import AddTempBan
 from Utils.Database.RemoveAuthUser import RemoveAuthUser
 from Utils.Database.DeleteTempBan import RemoveTempBan
 from Utils.Database.CheckTempBan import CheckBans
+from Utils.Api.request_api import request_api
 from Utils.Logs.Log import Log
 from Utils.AutoRol import GetAllMembers
 from Utils.MakeUID import MakeUID
@@ -18,6 +19,7 @@ from Utils.GetTime import GetTime
 import discord
 import typing
 import re
+import json
 from discord import app_commands
 from discord.ext import commands
 import pymysql
@@ -118,6 +120,46 @@ async def AddAuthorizedUser(ctx, username):
         await ctx.send(embed=embed)
         connection.close()
         return
+
+@bot.tree.command(name="removeban",description="remove the ban a user INGAME")
+async def removeban(interaction : discord.Interaction, id: str):
+    connection = db_connection()
+    name = interaction.user.name
+    Userid = SeeIfAuthorized(connection, name)
+    if Userid == False:
+        embed = discord.Embed(title="Error",description="You are not allowed to use this command!",color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    elif Userid != interaction.user.id:
+        embed = discord.Embed(title="Error",description="Your discord id does not match the database!",color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    connection.close()
+    API_KEY = os.getenv("API_KEY")
+    API_URL = os.getenv("API_URL")
+
+    resp = request_api(API_URL, API_KEY, "aac.removeban", id)
+    with open("data.json","w") as file:
+        file.write(resp)
+    
+    with open("data.json","r") as file:
+        jsondata = json.load(file)
+
+    embed = discord.Embed(title="BANS",color=discord.Color.greyple())
+    
+    try:
+        success = jsondata['success']
+        if success == True:
+            executed = jsondata['executed']
+            for item in executed:
+                embed.add_field(name=item['mapName'],value=item['response'])
+    except:
+        pass
+    os.remove("data.json")
+    await interaction.response.send_message(embed=embed)
+
 
 @bot.tree.command(name="removetempban",description="remove temp ban")
 async def removetempban(interaction : discord.Interaction, uid : str):

@@ -121,6 +121,46 @@ async def AddAuthorizedUser(ctx, username):
         connection.close()
         return
 
+@bot.tree.command(name="ban",description="Ban a user INGAME")
+async def ban(interaction : discord.Interaction, id: str):
+    connection = db_connection()
+    name = interaction.user.name
+    Userid = SeeIfAuthorized(connection, name)
+    if Userid == False:
+        embed = discord.Embed(title="Error",description="You are not allowed to use this command!",color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    elif Userid != interaction.user.id:
+        embed = discord.Embed(title="Error",description="Your discord id does not match the database!",color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    connection.close()
+    API_KEY = os.getenv("API_KEY")
+    API_URL = os.getenv("API_URL")
+    
+    resp = request_api(API_URL, API_KEY, "aac.ban", id)
+    with open("data.json","w") as file:
+        file.write(resp)
+    
+    with open("data.json","r") as file:
+        jsondata = json.load(file)
+
+    embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
+    
+    try:
+        success = jsondata['success']
+        if success == True:
+            executed = jsondata['executed']
+            for item in executed:
+                embed.add_field(name=item['mapName'],value=f"```{item['response']}```",inline=False)
+    except:
+        pass
+    
+    os.remove("data.json")
+    await interaction.response.send_message(embed=embed)
+    
 @bot.tree.command(name="removeban",description="remove the ban a user INGAME")
 async def removeban(interaction : discord.Interaction, id: str):
     connection = db_connection()
@@ -147,14 +187,14 @@ async def removeban(interaction : discord.Interaction, id: str):
     with open("data.json","r") as file:
         jsondata = json.load(file)
 
-    embed = discord.Embed(title="BANS",color=discord.Color.greyple())
+    embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
     
     try:
         success = jsondata['success']
         if success == True:
             executed = jsondata['executed']
             for item in executed:
-                embed.add_field(name=item['mapName'],value=item['response'])
+                embed.add_field(name=item['mapName'],value=f"```{item['response']}```",inline=False)
     except:
         pass
     os.remove("data.json")

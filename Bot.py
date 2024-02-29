@@ -220,7 +220,7 @@ async def removetempban(interaction : discord.Interaction, uid : str):
     dele = RemoveTempBan(connection, uid)
     if dele == False:
         embed = discord.Embed(title="Error",description=f"Can't find uid : {uid}",color=discord.Color.red())
-        connection.close()
+        connection.close() #dwa
         await interaction.response.send_message(embed=embed)
         return
     else:

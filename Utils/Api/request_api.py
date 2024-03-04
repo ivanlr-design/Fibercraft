@@ -2,7 +2,6 @@ import requests
 import hashlib
 import json
 
-
 def request_api(url, api_key, command, args, map=None):
     if map:
         hash_input = f'{command}{args}{map}{api_key}'.encode('utf-8')

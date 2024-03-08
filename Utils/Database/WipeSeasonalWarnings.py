@@ -20,7 +20,7 @@ async def WipeSeasonalWarnigs(connection : pymysql.connect, bot : commands.Bot, 
         embed = discord.Embed(title="Wiping Seasonal Warnings...",description=f"```Fetched : {UID}```",color=discord.Color.orange())
         await msj.edit(embed=embed)
         delete.append(UID)
-        asyncio.sleep(0.5)
+        await asyncio.sleep(0.5)
     
     embed = discord.Embed(title="Wiping Seasonal Warnings...",description=f"```Fetched all results, fetched : {len(delete)} in {round(time.time() - start,2)}s```",color=discord.Color.green())
     await msj.edit(embed=embed)
@@ -30,9 +30,14 @@ async def WipeSeasonalWarnigs(connection : pymysql.connect, bot : commands.Bot, 
         try:
             cursor.execute(consulta, (uid, ))
             connection.commit()
+            embed = discord.Embed(title="Wiping Seasonal Warnings...",description=f"```{uid} was deleted sucessfully!```",color=discord.Color.green())
+            await msj.edit(embed=embed)
         except:
-            embed = discord.Embed(title="Wiping Seasonal Warnings...",description=f"```Fetched all results, fetched : {len(delete)} in {round(time.time() - start,2)}s```",color=discord.Color.green())
+            embed = discord.Embed(title="Wiping Seasonal Warnings...",description=f"```Error deleting: {uid}```",color=discord.Color.red())
             
+            await msj.edit(embed=embed)
     
+    await asyncio.sleep(1)
 
-    
+    embed = discord.Embed(title="Wiped seasonal warnings",description=f"```All seasonal warnings were deleted sucessfully!```",color=discord.Color.green())
+    await msj.edit(embed=embed)

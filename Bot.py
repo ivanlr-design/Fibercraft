@@ -142,7 +142,7 @@ async def ban(interaction : discord.Interaction, id: str):
     
     resp = request_api(API_URL, API_KEY, "aac.ban", id)
     if resp == "Something went wrong!":
-        embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
+        embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.red())
         embed.add_field(name="Status",value="Something went wrong!")
         await interaction.response.send_message(embed=embed)
         return 
@@ -187,7 +187,7 @@ async def removeban(interaction : discord.Interaction, id: str):
 
     resp = request_api(API_URL, API_KEY, "aac.removeban", id)
     if resp == "Something went wrong!":
-        embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
+        embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.red())
         embed.add_field(name="Status",value="Something went wrong!")
         await interaction.response.send_message(embed=embed)
         return 

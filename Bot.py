@@ -11,6 +11,7 @@ from Utils.Database.AddTempBan import AddTempBan
 from Utils.Database.RemoveAuthUser import RemoveAuthUser
 from Utils.Database.DeleteTempBan import RemoveTempBan
 from Utils.Database.CheckTempBan import CheckBans
+from Utils.Database.SearchForID import SearchForID
 from Utils.Api.request_api import request_api
 from Utils.Logs.Log import Log
 from Utils.AutoRol import GetAllMembers
@@ -286,6 +287,52 @@ async def tempban(interaction : discord.Interaction, names : str, ids : str, tri
         connection.close()
         return
 
+@bot.tree.command(name="searchforid",description="search for id related to any punishment")
+async def searchforid(interaction : discord.Interaction, id : str):
+    connection = db_connection()
+    name = interaction.user.name
+    Userid = SeeIfAuthorized(connection, name)
+    if Userid == False:
+        embed = discord.Embed(title="Error",description="You are not allowed to use this command!",color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    elif Userid != interaction.user.id:
+        embed = discord.Embed(title="Error",description="Your discord id does not match the database!",color=discord.Color.red())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+
+    resultado = SearchForID(connection, id)
+    
+    if resultado == False:
+        embed = discord.Embed(title="Not found",description=f"Unable to find {id} in database.",color=discord.Color.orange())
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    else:
+        totalwarnings = len(resultado)
+        embed = discord.Embed(title=f"Total warnings related to {id} : {totalwarnings} warnings",color = discord.Color.green())
+        UIDS = []
+        WarningTypes = {"Permanent Warning":0, "Seasonal Warning":0, "Verbal Warning":0}
+        for result in resultado:
+            UIDS.append(result["UID"])
+            if result["Warning_type"] == "Permanent Warning":
+                WarningTypes["Permanent Warning"] += 1
+            elif result["Warning_type"] == "Seasonal Warning":
+                WarningTypes["Seasonal Warning"] += 1
+            elif result["Warning_type"] == "Verbal Warning":
+                WarningTypes["Verbal Warning"] += 1
+        
+        embed.add_field(name="Permanent Warnings",value=WarningTypes["Permanent Warning"], inline=False)
+        embed.add_field(name="Seasonal Warnings",value=WarningTypes["Seasonal Warning"], inline=False)
+        embed.add_field(name="Verbal Warnings",value=WarningTypes["Verbal Warning"], inline=False)
+        text_UIDS = ", ".join(UIDS)
+        embed.set_footer(text=f"UIDS : {text_UIDS}")
+        await interaction.response.send_message(embed=embed)
+        connection.close()
+        return
+    
 @bot.tree.command(name="searchforpunishments",description="search for punishments by uid,Tribe name")
 async def searchforpunishments(interaction : discord.Interaction, tribename_or_uid : str):
     connection = db_connection()

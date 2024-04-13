@@ -141,6 +141,12 @@ async def ban(interaction : discord.Interaction, id: str):
     API_URL = os.getenv("API_URL")
     
     resp = request_api(API_URL, API_KEY, "aac.ban", id)
+    if resp == "Something went wrong!":
+        embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
+        embed.add_field(name="Status",value="Something went wrong!")
+        await interaction.response.send_message(embed=embed)
+        return 
+    
     with open("data.json","w") as file:
         file.write(resp)
     
@@ -148,7 +154,6 @@ async def ban(interaction : discord.Interaction, id: str):
         jsondata = json.load(file)
 
     embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
-    
     try:
         success = jsondata['success']
         if success == True:
@@ -181,6 +186,11 @@ async def removeban(interaction : discord.Interaction, id: str):
     API_URL = os.getenv("API_URL")
 
     resp = request_api(API_URL, API_KEY, "aac.removeban", id)
+    if resp == "Something went wrong!":
+        embed = discord.Embed(title="BANS",description=f"```aac.ban {id}```",color=discord.Color.greyple())
+        embed.add_field(name="Status",value="Something went wrong!")
+        await interaction.response.send_message(embed=embed)
+        return 
     with open("data.json","w") as file:
         file.write(resp)
     

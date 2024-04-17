@@ -536,8 +536,11 @@ async def punishment(interaction : discord.Interaction, names : str, ids : str, 
         embed.set_thumbnail(url="https://th.bing.com/th/id/R.a1849d676a332b5516f3dd3cf3d90609?rik=XwaA15sdUDGrag&riu=http%3a%2f%2fwww.freepngimg.com%2fdownload%2fgreen_tick%2f27880-5-green-tick-clipart.png&ehk=23wDe1sjBvA6xbwbaYRnxtE0tnwNzqbafc3L5kmYcms%3d&risl=&pid=ImgRaw&r=0")
         embed.set_footer(text=f"UID : {uid}, coded by Ivan")
         Log(f"[{interaction.user.name}] - made a punishment under the uid : {uid}")
-        connection.close()
+        fullargs = f"'Tribe : {tribename} has been warned for {reason}, punishment : {punishment} made by : {interaction.user.name}'"
         await interaction.response.send_message(embed=embed)
+        response = request_api(os.getenv("API_URL"), os.getenv("API_KEY"), "punishment.advert.rcon", fullargs)
+        print(response)
+        connection.close()
     else:
         embed =discord.Embed(title="FATAL ERROR IN DATABSE",description=f"Please contact ivanlr providing this message and time",color=discord.Color.red())
         connection.close()

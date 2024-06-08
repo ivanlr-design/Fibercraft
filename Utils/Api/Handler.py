@@ -19,6 +19,6 @@ def CheckKey():
     return jsonify({"Authenticated": "Succesfully auth"}), 200
 
 def Run():
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=21902)
 
     

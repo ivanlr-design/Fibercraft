@@ -22,6 +22,7 @@ import discord
 import typing
 import re
 import json
+import threading
 from discord import app_commands
 from discord.ext import commands
 import pymysql
@@ -569,5 +570,7 @@ else:
     with open("Logs.txt","w") as file:
         file.close()
 
-Run()
+flask_thr = threading.Thread(target=Run)
+flask_thr.start()
+
 bot.run(BOT)

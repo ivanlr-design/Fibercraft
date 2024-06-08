@@ -17,6 +17,7 @@ from Utils.Logs.Log import Log
 from Utils.AutoRol import GetAllMembers
 from Utils.MakeUID import MakeUID
 from Utils.GetTime import GetTime
+from Utils.Api.Handler import Run
 import discord
 import typing
 import re
@@ -568,4 +569,5 @@ else:
     with open("Logs.txt","w") as file:
         file.close()
 
+Run()
 bot.run(BOT)

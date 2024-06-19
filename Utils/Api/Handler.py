@@ -5,17 +5,17 @@ app = Flask(__name__)
 @app.route("/api/v1/CheckKey", methods=["GET"])
 def CheckKey():
 
-    if not request.is_json:
-        return jsonify({"Error":"Contenido debe ser JSON"}), 400
+    apikey = request.args.get("ApiKey")
+    Key = request.args.get("Key")
+    HWID = request.args.get("HWID")
+    TypeKey = request.args.get("TypeKey")
+    print(apikey)
+    print(Key)
+    print(HWID)
+    print(TypeKey)
+    if not apikey or not Key or not HWID or not TypeKey:
+        return jsonify({"Failed to Authenticate": "Not enough arguments"}), 400
 
-    data = request.get_json()
-
-    APIKey = data.get("APIKey")
-    Key = data.get("Key")
-    TypeKey = data.get("TypeKey")
-    HWID = data.get("HWID")
-
-    print (APIKey + " " + Key + " " + TypeKey + " " + HWID)
     return jsonify({"Authenticated": "Succesfully auth"}), 200
 
 def Run():

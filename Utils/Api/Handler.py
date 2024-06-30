@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request
 import pymysql.cursors
 import pymysql
 import os
+from dotenv import load_dotenv, dotenv_values
+load_dotenv(".env")
+
 MYSQL_CONNECT = os.getenv("MYSQL_CONNECTOR")
 MYSQL_USER = os.getenv("MYSQL_USER")
 MYSQL_PASSWD = os.getenv("MYSQL_PASSWD")
@@ -9,11 +12,13 @@ MYSQL_PASSWD = os.getenv("MYSQL_PASSWD")
 app = Flask(__name__)
 
 def db_connection():
-    connection = pymysql.connect(host="localhost",
+    print(MYSQL_CONNECT)
+    connection = pymysql.connect(host=MYSQL_CONNECT,
                                 user=MYSQL_USER,
                                 password=MYSQL_PASSWD,
                                 db='s51219_punish',
                                 charset='utf8mb4',
+                                port=3306,
                                 cursorclass=pymysql.cursors.DictCursor)
 
     return connection

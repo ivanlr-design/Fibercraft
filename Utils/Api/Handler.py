@@ -9,7 +9,7 @@ MYSQL_PASSWD = os.getenv("MYSQL_PASSWD")
 app = Flask(__name__)
 
 def db_connection():
-    connection = pymysql.connect(host="161.97.78.70",
+    connection = pymysql.connect(host="localhost",
                                 user=MYSQL_USER,
                                 password=MYSQL_PASSWD,
                                 db='s51219_punish',

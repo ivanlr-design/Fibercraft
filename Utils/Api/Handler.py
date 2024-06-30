@@ -9,7 +9,7 @@ MYSQL_PASSWD = os.getenv("MYSQL_PASSWD")
 app = Flask(__name__)
 
 def db_connection():
-    connection = pymysql.connect(host=MYSQL_CONNECT,
+    connection = pymysql.connect(host="161.97.78.70",
                                 user=MYSQL_USER,
                                 password=MYSQL_PASSWD,
                                 db='s51219_punish',
@@ -47,6 +47,7 @@ def CheckKey():
     
 
 def Run():
+    db_connection()
     app.run(host='0.0.0.0', port=21902)
 
     

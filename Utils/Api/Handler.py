@@ -36,14 +36,17 @@ def CheckKey():
 
     conection = db_connection()
     if conection:
+        print("got conection")
         cursor = conection.cursor()
         consulta = "SELECT Type FROM KeysValidation WHERE ValidKey = %s"
         VALUES = (Key, )
         cursor.execute(consulta, VALUES)
         results = cursor.fetchall()
+        print(results)
         if results:
             print(results)
-        
+        else:
+            print("NO result = no key valid")
         return jsonify({"Authenticated": "Succesfully auth"}), 200
     else:
         return jsonify({"Internal Error": "Mysql Error"}), 500

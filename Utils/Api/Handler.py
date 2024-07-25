@@ -32,24 +32,25 @@ def CheckKey():
     TypeKey = request.args.get("TypeKey")
     
     if not apikey or not Key or not HWID or not TypeKey:
-        return jsonify({"Failed to Authenticate": "Not enough arguments"}), 400
+        return jsonify({"Status": "Corrupted"}), 400
 
     conection = db_connection()
     if conection:
-        print("got conection")
         cursor = conection.cursor()
         consulta = "SELECT Type FROM KeysValidation WHERE ValidKey = %s"
         VALUES = (Key, )
         cursor.execute(consulta, VALUES)
         results = cursor.fetchall()
-        print(results)
         if results:
-            print(results)
+            if TypeKey == results:
+                print(results)
+
+            return jsonify({"Status": "Succesfully auth"}), 200
         else:
-            print("NO result = no key valid")
-        return jsonify({"Authenticated": "Succesfully auth"}), 200
+            return jsonify({"Status": "Failed To authenticate: INVALID KEY PROVIDED"}), 400
+        
     else:
-        return jsonify({"Internal Error": "Mysql Error"}), 500
+        return jsonify({"Status": "Mysql Error"}), 500
 
 
     

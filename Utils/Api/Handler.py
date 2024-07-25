@@ -51,9 +51,6 @@ def CheckKey():
             for result in results:
                 
                 Type = result["Type"]
-
-                print(Type)
-
                 if TypeKey == Type or Type == "Pruebas":
                     consulta = "SELECT HWID FROM KeysValidation WHERE ValidKey = %s"
                     VALUES = (Key, )
@@ -62,7 +59,6 @@ def CheckKey():
                     for result in results:
 
                         hwid = result["HWID"]
-                        print(hwid)
                         if hwid == HWID:
                             return jsonify({"Status": "Succesfully auth"}), 200
                         else:

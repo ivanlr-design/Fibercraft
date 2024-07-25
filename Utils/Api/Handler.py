@@ -49,14 +49,21 @@ def CheckKey():
         results = cursor.fetchall()
         if results:
             for result in results:
-                print(result)
-                if TypeKey == result or result == "Pruebas":
+                
+                Type = result["Type"]
+
+                print(Type)
+
+                if TypeKey == Type or Type == "Pruebas":
                     consulta = "SELECT HWID FROM KeysValidation WHERE ValidKey = %s"
                     VALUES = (Key, )
                     cursor.execute(consulta, VALUES)
                     results = cursor.fetchall()
                     for result in results:
-                        if result == HWID:
+
+                        hwid = result["HWID"]
+                        print(hwid)
+                        if hwid == HWID:
                             return jsonify({"Status": "Succesfully auth"}), 200
                         else:
                             return jsonify({"Status": "Failed to Auth: Err code 0x26"}), 400 

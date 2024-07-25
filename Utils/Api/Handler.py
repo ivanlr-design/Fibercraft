@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import pymysql.cursors
 import pymysql
 import os
+import hashlib
 from dotenv import load_dotenv, dotenv_values
 load_dotenv(".env")
 
@@ -31,6 +32,11 @@ def CheckKey():
     HWID = request.args.get("HWID")
     TypeKey = request.args.get("TypeKey")
     
+    md5_hash = hashlib.md5(apikey.encode()).hexdigest()
+
+    if md5_hash != "9828858d6c3b1658791eaa25989538bb":
+        return jsonify({"Status": "Not Authenticated, err code: 0x20"}), 400
+
     if not apikey or not Key or not HWID or not TypeKey:
         return jsonify({"Status": "Corrupted"}), 400
 
@@ -42,12 +48,24 @@ def CheckKey():
         cursor.execute(consulta, VALUES)
         results = cursor.fetchall()
         if results:
-            if TypeKey == results:
-                print(results)
+            for result in results:
+                print(result)
+                if TypeKey == result or result == "Pruebas":
+                    consulta = "SELECT HWID FROM KeysValidation WHERE ValidKey = %s"
+                    VALUES = (Key, )
+                    cursor.execute(consulta, VALUES)
+                    results = cursor.fetchall()
+                    for result in results:
+                        if result == HWID:
+                            return jsonify({"Status": "Succesfully auth"}), 200
+                        else:
+                            return jsonify({"Status": "Failed to Auth: Err code 0x26"}), 400 
+                else:
+                    return jsonify({"Status": "Failed to Auth: Err code 0x25"}), 400
 
-            return jsonify({"Status": "Succesfully auth"}), 200
+                
         else:
-            return jsonify({"Status": "Failed To authenticate: INVALID KEY PROVIDED"}), 400
+            return jsonify({"Status": "Failed To authenticate: Err code 0x24"}), 400
         
     else:
         return jsonify({"Status": "Mysql Error"}), 500

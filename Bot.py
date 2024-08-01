@@ -320,11 +320,11 @@ async def searchforid(interaction : discord.Interaction, id : str):
         for result in resultado:
             UIDS.append(result["UID"])
             if result["Warning_type"] == "Permanent Warning":
-                WarningTypes["Permanent Warning"] += 1
+                WarningTypes["Permanent Warning"] += result["Warnings"]
             elif result["Warning_type"] == "Seasonal Warning":
-                WarningTypes["Seasonal Warning"] += 1
+                WarningTypes["Seasonal Warning"] += result["Warnings"]
             elif result["Warning_type"] == "Verbal Warning":
-                WarningTypes["Verbal Warning"] += 1
+                WarningTypes["Verbal Warning"] += result["Warnings"]
         
         embed.add_field(name="Permanent Warnings",value=WarningTypes["Permanent Warning"], inline=False)
         embed.add_field(name="Seasonal Warnings",value=WarningTypes["Seasonal Warning"], inline=False)

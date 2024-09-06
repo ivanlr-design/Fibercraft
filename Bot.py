@@ -12,6 +12,7 @@ from Utils.Database.RemoveAuthUser import RemoveAuthUser
 from Utils.Database.DeleteTempBan import RemoveTempBan
 from Utils.Database.CheckTempBan import CheckBans
 from Utils.Database.SearchForID import SearchForID
+from Utils.Database.ClearPendingConections import ClearPendingConections
 from Utils.Api.request_api import request_api
 from Utils.Logs.Log import Log
 from Utils.AutoRol import GetAllMembers
@@ -53,6 +54,7 @@ async def start():
     while True:
         await GetAllMembers(bot)
         connect = db_connection()
+        await ClearPendingConections(connect)
         await CheckBans(connect, bot, 1073357812786282536)
         connect.close()
         await asyncio.sleep(0.2)

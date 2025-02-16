@@ -13,7 +13,6 @@ async def ClearPendingConections(connector : pymysql.connect):
         for result in results:
             killQuery = results[index]['kill_query']
             try:
-            
                 cursor.execute(killQuery)
             except Exception as e:
                 print("[!] - Error: " + str(e))

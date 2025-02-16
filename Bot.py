@@ -34,6 +34,7 @@ load_dotenv(".env")
 MYSQL_CONNECT = os.getenv("MYSQL_CONNECTOR")
 MYSQL_USER = os.getenv("MYSQL_USER")
 MYSQL_PASSWD = os.getenv("MYSQL_PASSWD")
+MYSQL_DB = os.getenv("MYSQL_DB")
 BOT = os.getenv("BOT")
 compiler = re.compile(r"[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9] [0-6][0-9]:[0-6][0-9]")
 table1 = "Punishments"
@@ -42,7 +43,7 @@ def db_connection():
     connection = pymysql.connect(host=MYSQL_CONNECT,
                                 user=MYSQL_USER,
                                 password=MYSQL_PASSWD,
-                                db='s51219_punish',
+                                db=MYSQL_DB,
                                 charset='utf8mb4',
                                 cursorclass=pymysql.cursors.DictCursor)
 
